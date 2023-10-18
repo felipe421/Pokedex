@@ -45,9 +45,9 @@ export default function HomeScreen(props) {
                 </>}
             /> */}
             {pokemons.map((item, i) => (
-                <Card  mode='outlined' style={{ marginBottom: 10 }} onPress={() => { props.navigation.navigate('TelaInformacao', (i + 1)) }}>
-                    <Card.Cover style={{resizeMode: 'stretch'}} source={{ uri: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + (i + 1) + '.png' }} />
-                    <Card.Title title={item.name}/>
+                <Card mode='outlined' style={{ marginBottom: 10 }} onPress={() => { props.navigation.navigate('TelaInformacao', (i + 1)) }}>
+                    <Card.Cover style={{ resizeMode: 'stretch' }} source={{ uri: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + (i + 1) + '.png' }} />
+                    <Card.Title title={item.name} />
                 </Card>
             ))}
         </ScrollView>
@@ -57,9 +57,8 @@ export default function HomeScreen(props) {
 const styles = StyleSheet.create({
     Container: {
         maxWidth: '100%',
-        paddingHorizontal: 10,
-        marginVertical: 10,
+        padding: 10,
         backgroundColor: '#FFFFFF'
-        
+
     }
 })

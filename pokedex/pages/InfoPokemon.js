@@ -1,28 +1,32 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import PokedexApi from '../services/PokedexApi'
+import { Card } from 'react-native-paper'
 
 export default function InfoPokemon(props) {
-    const [pokemons, setPokemons] = useState([])
+    const [pokemon, setPokemons] = useState([])
 
-    const LinkPokermon = props.route.params
-
-    console.log(pokemons)
-
+    const id = props.route.params
 
     useEffect(() => {
 
-        PokedexApi.get('/pokemon/' + LinkPokermon + '/').then(response => {
+        PokedexApi.get('/pokemon/' + id + '/').then(response => {
             setPokemons(response.data)
         })
 
     }, [])
 
-  return (
-    <View>
-      <Text>{pokemons.base_experience}</Text>
-    </View>
-  )
+    return (
+        <View style={styles.Container}>
+            <Card mode='outlined'>
+                <Card.Title title={pokemon.name}/>
+            </Card>
+        </View>
+    )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    Container: {
+        padding: 10
+    }
+})
