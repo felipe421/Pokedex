@@ -10,7 +10,7 @@ const Stack = createStackNavigator();
 export default function Routes() {
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName='HomeScreen' screenOptions={{headerStyle: styles.backGround, headerTitleStyle: styles.headerTitleStyle}}>
+            <Stack.Navigator initialRouteName='HomeScreen' screenOptions={{headerStyle: styles.backGround, headerTitleStyle: styles.headerTitleStyle, headerLeftContainerStyle: {paddingLeft: 10}, headerTintColor: '#FFFFFF'}}>
                 <Stack.Screen name="HomeScreen" component={HomeScreen} options={{headerTitle: 'Pokemons'}}/>
                 <Stack.Screen name="TelaInformacao" component={InfoPokemon} options={{ headerTitle: 'Notificações', headerLeftLabelVisible: null, }} />
                 {/* <Stack.Screen name="StorageAndData" component={StorageAndData} options={{ headerTitle: 'Armazenamento e dados', headerLeftLabelVisible: null }} /> */}
