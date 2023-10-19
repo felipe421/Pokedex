@@ -28,5 +28,4 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',   //titulo na barra superior
         fontSize: 23
     },
-
 })
