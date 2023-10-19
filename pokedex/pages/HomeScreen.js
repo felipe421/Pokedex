@@ -37,14 +37,14 @@ export default function HomeScreen(props) {
                 // style={styles.list}
                 
                 data={pokemons}
-                numColumns={4}
+                numColumns={3}
                 columnWrapperStyle={{gap: 10, width: '100%', justifyContent: 'space-between'}}
                 keyExtractor={item => String(item.id)}
                 renderItem={({ item, index }) => (
                     // <></>
-                    <Card mode='outlined' style={{marginBottom: 10, flex: 1 }} onPress={() => { props.navigation.navigate('TelaInformacao', (index + 1)) }}>
+                    <Card mode='outlined' style={{marginBottom: 10, flex: 1, borderRadius: 5 }} onPress={() => { props.navigation.navigate('TelaInformacao', (index + 1)) }}>
                         {/* <Image style={{ width: '100%', height: 100, resizeMode: 'stretch' }} source={{ uri: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + (index + 1) + '.png' }} /> */}
-                        <Card.Cover style={{ width: '100%', height: 100, resizeMode: 'stretch', borderRadius: 0 }}  source={{ uri: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + (index + 1) + '.png' }} />
+                        <Card.Cover style={{ width: '100%', height: 100, resizeMode: 'stretch', borderRadius: 5, padding: 4 }}  source={{ uri: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + (index + 1) + '.png' }} />
                         <Card.Title title={item.name} />
                         {/* <Card.Title title={index} /> */}
                     </Card>
