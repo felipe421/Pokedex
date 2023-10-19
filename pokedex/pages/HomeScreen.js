@@ -8,11 +8,15 @@ export default function HomeScreen(props) {
     const [pokemons, setPokemons] = useState([])
 
     useEffect(() => {
-
         PokedexApi.get('/pokemon?limit=10').then(response => {
-            setPokemons(response.data.results)
+            let pokemonList = response.data.results
+            pokemonList.map((item, i) => {
+                item.id = i + 1
+                return item
+            })
+            setPokemons(pokemonList)
+            console.log(pokemonList)
         })
-
     }, [])
 
     // const Test = () => {
@@ -28,29 +32,28 @@ export default function HomeScreen(props) {
 
 
     return (
-        <ScrollView style={styles.Container}>
-            {/* <FlatList
-                showsVerticalScrollIndicator={false}
+        <View style={styles.Container}>
+            <FlatList
+                style={styles.list}
                 data={pokemons}
-                renderItem={({ item, i }) => <>
-                    <Card  style={{ marginBottom: 10 }}>
-                        <Card.Cover source={{ uri:  'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + (i + 1) + '.png'}} />
-                        <Card.Title title={item.name} subtitle="Card Subtitle" />
-                        <Card.Content>
-                            <Text variant="titleLarge">Card title</Text>
-                            <Text variant="bodyMedium">Card content</Text>
-                        </Card.Content>
+                keyExtractor={item => String(item.id)}
+                renderItem={({ item, index }) => (
+                    // <></>
+                    <Card mode='outlined' style={{ marginBottom: 10 }} onPress={() => { props.navigation.navigate('TelaInformacao', (index + 1)) }}>
+                        <Card.Cover style={{ resizeMode: 'stretch' }} source={{ uri: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + (index + 1) + '.png' }} />
+                        <Card.Title title={item.name} />
+                        {/* <Card.Title title={index} /> */}
                     </Card>
-                    {console.log(i)}
-                </>}
-            /> */}
-            {pokemons.map((item, i) => (
+                )}
+
+            />
+            {/* {pokemons.map((item, i) => (
                 <Card mode='outlined' style={{ marginBottom: 10 }} onPress={() => { props.navigation.navigate('TelaInformacao', (i + 1)) }}>
                     <Card.Cover style={{ resizeMode: 'stretch' }} source={{ uri: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + (i + 1) + '.png' }} />
                     <Card.Title title={item.name} />
                 </Card>
-            ))}
-        </ScrollView>
+            ))} */}
+        </View>
     )
 }
 
