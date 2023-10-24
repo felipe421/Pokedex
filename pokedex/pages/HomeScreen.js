@@ -35,15 +35,19 @@ export default function HomeScreen(props) {
             <FlatList
                 // style={styles.list}
                 showsVerticalScrollIndicator={false}
-                numColumns={4}
+                // numColumns={4}
                 data={pokemons}
                 keyExtractor={item => String(item.id)}
-                columnWrapperStyle={{ gap: 10, width: '100%', justifyContent: 'space-between' }}
+                // columnWrapperStyle={{ gap: 10, width: '100%', justifyContent: 'space-between' }}
                 renderItem={({ item }) => (
                     // <></>
                     <Card key={item.id} mode='outlined' style={{ marginBottom: 10, flex: 1, borderRadius: 5 }} onPress={() => { props.navigation.navigate('TelaInformacao', item.id)}} >
                         <Card.Cover style={{ width: '100%', height: 100, resizeMode: 'stretch', borderRadius: 5, padding: 2 }} source={{ uri: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + item.id + '.png' }} />
-                        <Card.Title title={item.name} />
+                        <Card.Title title={item.name}/>
+                        <Card.Content>
+
+                        <Types id={item.id}/>
+                        </Card.Content>
                     </Card>
                 )}
             />

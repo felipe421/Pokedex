@@ -12,7 +12,8 @@ export default function Types(props) {
     //     const link = 'https://pokeapi.co/api/v2/pokemon/' + idType + '/'
     //     const tipo = link.types
 
-    //     setTypes([tipo])
+    //     console.log(tipo)
+    //     setTypes(tipo)
     // }
 
 
@@ -24,19 +25,27 @@ export default function Types(props) {
             setTypes(tipos)
             // console.log(tipos)
         }).catch(error => {
-            // console.log(error)
+            console.log(error)
         })
     }, [])
 
-    console.log(types)
+    // console.log(types)
 
 
 
     return (
-        <View style={{backgroundColor: 'black'}}>
-            {types.map((item, i) => {
-                <Text key={i}>{item.name}</Text>
-            })}
+        <View >
+            
+                {types.map((item) => {
+                
+                    {console.log(item)}
+                   return  <Text >{item.type.name}</Text>
+                
+                })}
+            
+                
+            
+            {/* <Text>{types}</Text> */}
 
         </View>
     )
