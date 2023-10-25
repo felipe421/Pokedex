@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { Image, StyleSheet, View } from 'react-native'
-import { FlatList } from 'react-native-gesture-handler';
+import { FlatList, TouchableHighlight } from 'react-native-gesture-handler';
 import PokedexApi from '../services/PokedexApi'
-import { Card, Text } from 'react-native-paper'
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { Card, FAB, Portal, Text } from 'react-native-paper'
 import Types from '../components/Types';
+import { CapitalizeWord } from '../components/CapitalyzeWord';
 
 export default function HomeScreen(props) {
     const [pokemons, setPokemons] = useState([]);
-    const [type, setType] = useState([])
     const [id, setId] = useState([])
+    const [state, setState] = useState({ open: false });
 
     useEffect(() => {
-        PokedexApi.get('/pokemon?limit=2').then(response => {
+        PokedexApi.get('/pokemon?limit=10').then(response => {
             let pokemonList = response.data.results
             pokemonList.map((item, i) => {
                 item.id = i + 1
@@ -19,19 +21,16 @@ export default function HomeScreen(props) {
                 return item
             })
             setPokemons(pokemonList)
-            // console.log(pokemonList)
         })
     }, [])
 
-    useEffect(() => {
-        PokedexApi.get('/pokemon/' + id + '/').then(response => {
-            let pokemonType = response.data
-            setType(pokemonType)
-        })
-    }, [])
+    const onStateChange = ({ open }) => setState({ open });
+
+    const { open } = state;
 
     return (
         <View style={styles.Container}>
+
             <FlatList
                 style={styles.Flat}
                 contentContainerStyle={styles.Flat}
@@ -48,18 +47,70 @@ export default function HomeScreen(props) {
                     //     <Types id={item.id}/>
                     //     </Card.Content>
                     // </Card>
-                    <View key={i} style={styles.containerMap}>
-                        <View style={{flex: 4, width: '70%'}}>
-                            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                                <Text># {item.id}</Text>
-                                <Text>{item.name}</Text>
+                    <TouchableHighlight onPress={() => { props.navigation.navigate('TelaInformacao', item.id) }}>
+                        <View key={item.id} style={styles.containerMap}>
+                            <View style={styles.containerInfos}>
+                                <View style={{ alignItems: 'center', gap: 10, width: '100%' }}>
+                                    <View style={[styles.containerName]}>
+                                        <View style={styles.Equal}>
+                                            <Text style={styles.textInside}># {item.id}</Text>
+                                            <Text style={styles.textInside}>{CapitalizeWord(item.name)}</Text>
+                                        </View>
+                                        <View style={[styles.Equal]}>
+                                            <Ionicons name='star-outline' size={20} color="black" />
+                                            <Ionicons name='ellipse-outline' size={20} color="black" />
+                                        </View>
+                                    </View>
+                                    <Types id={item.id} />
+                                </View>
+                            </View>
+                            <View style={styles.Image}>
+                                <Image source={{ uri: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + item.id + '.png' }} style={{ width: '100%', height: '100%', padding: 2 }} />
                             </View>
                         </View>
-                        <Image source={{ uri: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + item.id + '.png' }} style={{flex: 1, width: '80%', height: 100, resizeMode: 'stretch', borderRadius: 5, padding: 2 }} />
-                    </View>
+                    </TouchableHighlight>
 
                 )}
             />
+
+            <Portal>
+                <FAB.Group
+                    fabStyle={{ backgroundColor: '#00918F', borderRadius: 50 }} rippleColor='#00918F'  color='white'
+                    
+                    open={open}
+                    visible
+                    icon={({ size, color }) => (
+                        <Image
+                            source={require('../assets/logoPokedex.png')}
+                            style={{ width: size, height: size, tintColor: color }}
+                        />)}
+                    actions={[
+                        // { icon: 'plus', onPress: () => console.log('Pressed add') },
+                        {
+                            icon: 'order-alphabetical-ascending',
+                            label: 'Ordenar por...',
+                            onPress: () => console.log('Order A-z'),
+                        },
+                        {
+                            icon: 'filter-outline',
+                            label: 'Filtrar por nome',
+                            onPress: () => console.log('Order Name'),
+                        },
+                        {
+                            icon: 'card-search-outline',
+                            label: 'Pesquisar tudo',
+                            onPress: () => console.log('Search All'),
+                        },
+                    ]}
+                    onStateChange={onStateChange}
+                    onPress={() => {
+                        if (open) {
+                            // do something if the speed dial is open
+                        }
+                    }}
+                />
+            </Portal>
+
         </View >
     );
 }
@@ -69,11 +120,11 @@ const styles = StyleSheet.create({
         // flex: 1,
         maxWidth: '100%',
         padding: 10,
-        backgroundColor: '#FFFFFF'
+        backgroundColor: '#FFFFFF',
     },
 
     Flat: {
-        backgroundColor: 'white',
+        // backgroundColor: 'white',
         gap: 10
     },
 
@@ -81,9 +132,41 @@ const styles = StyleSheet.create({
         flexDirection: 'row', justifyContent: 'space-between',
         borderWidth: 1, borderRadius: 15, borderColor: 'black',
         paddingLeft: 10,
-        backgroundColor: 'white'
-    }
+        // backgroundColor: 'white',
+        height: 80
+    },
+
+    containerInfos: {
+        flex: 4, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+        maxWidth: '75%',
+        paddingVertical: 10,
+        // backgroundColor: 'black'
+    },
+
+    Equal: {
+        flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10
+    },
+
+    containerName: {
+        width: '100%',
+        flexDirection: 'row', justifyContent: 'space-between'
+    },
+
+    textInside: {
+        fontSize: 20, fontWeight: '500'
+    },
+
+    Image: {
+        width: '25%',
+        marginLeft: 6,
+        alignItems: 'center', justifyContent: 'center',
+        borderLeftWidth: 2, borderTopLeftRadius: 40, borderBottomLeftRadius: 40
+    },
+
+    // fab: {
+    //     position: 'absolute',
+    //     bottom: 0, right: 0,
+    //     // marginBottom: 10, marginRight: 20
+    // }
 
 })
-
-// subtitle={type.types.name[0, 1]}

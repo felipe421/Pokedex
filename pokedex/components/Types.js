@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Card, Text } from 'react-native-paper'
 import axios from 'axios'
 import { FlatList } from 'react-native-gesture-handler'
+import { ConvertUpperCase } from './CapitalyzeWord'
 
 export default function Types(props) {
     const [types, setTypes] = useState([])
@@ -34,20 +35,33 @@ export default function Types(props) {
 
 
     return (
-        <View >
-            
-                {types.map((item, i) => {
-                
-                   return  <Text key={i}>{item.type.name}</Text>
-                
-                })}
-            
-                
-            
-            {/* <Text>{types}</Text> */}
+        <View style={styles.Container}>
+
+            {types.map((item, i) => {
+                return (
+                    <View key={i} style={styles.containerText}>
+                        <Text style={styles.textInside}>{ConvertUpperCase(item.type.name)}</Text>
+                    </View>
+                )
+            })}
 
         </View>
     )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    Container: {
+        flexDirection: 'row', flexWrap: 'nowrap', gap: 10,
+        width: '100%'
+    },
+
+    containerText: {
+        flex: 1, alignItems: 'center',
+        padding: 5,
+        borderColor: 'black', borderWidth: 1.2, borderRadius: 7
+    },
+
+    textInside: {
+        fontSize: 15, fontWeight: 'bold'
+    }
+})

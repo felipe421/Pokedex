@@ -1,31 +1,38 @@
-import React from 'react'
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from '../pages/HomeScreen.js'
-import { StyleSheet } from 'react-native';
-import InfoPokemon from '../pages/InfoPokemon.js';
+import { Image, StyleSheet, useWindowDimensions } from 'react-native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import StackRoutes from './StackRoutes';
+import { Ionicons } from '@expo/vector-icons';
 
-const Stack = createStackNavigator();
-
+const Drawer = createDrawerNavigator();
 export default function Routes() {
+
+    const dimensions = useWindowDimensions();
+
     return (
-        <NavigationContainer>
-            <Stack.Navigator initialRouteName='HomeScreen' screenOptions={{headerStyle: styles.backGround, headerTitleStyle: styles.headerTitleStyle, headerLeftContainerStyle: {paddingLeft: 10}, headerTintColor: '#FFFFFF'}}>
-                <Stack.Screen name="HomeScreen" component={HomeScreen} options={{headerTitle: 'Pokemons'}}/>
-                <Stack.Screen name="TelaInformacao" component={InfoPokemon} options={{ headerTitle: 'Notificações', headerLeftLabelVisible: null, }} />
-                {/* <Stack.Screen name="StorageAndData" component={StorageAndData} options={{ headerTitle: 'Armazenamento e dados', headerLeftLabelVisible: null }} /> */}
-            </Stack.Navigator>
-        </NavigationContainer>
+        <Drawer.Navigator screenOptions={{
+            headerStyle: styles.backGround, headerTitleStyle: styles.headerTitleStyle, headerLeftContainerStyle: { paddingLeft: 10 },
+            drawerStyle: { backgroundColor: '#00918F', borderRightColor: 'black', borderRightWidth: 2 },
+            drawerType: dimensions.width >= 768 ? 'front' : 'front',
+            headerTintColor: 'white'
+        }}>
+            <Drawer.Screen name="Pokedex" component={StackRoutes} options={{ drawerIcon: ({ size, focused }) => <Image style={styles.icon} source={require('../assets/logoPokedex.png')} size={size} /> }} />
+            {/* <Drawer.Screen name="Pokedex" component={StackRoutes} options={{drawerIcon: ({size, focused}) => <Ionicons name='hourglass' color='#A9A9A9' size={size} />}}/> */}
+        </Drawer.Navigator>
     )
 }
 
 const styles = StyleSheet.create({
     backGround: {
-        backgroundColor: '#00918F',  //cor de fundo da barra superior
+        backgroundColor: '#00918F',
     },
 
     headerTitleStyle: {
         color: '#FFFFFF',   //titulo na barra superior
-        fontSize: 23
+        fontSize: 23, fontWeight: 'bold'
     },
+
+    icon: {
+        width: 25, height: 25,
+        // backgroundColor: 'black'
+    }
 })
