@@ -36,10 +36,9 @@ export default function Types(props) {
     return (
         <View >
             
-                {types.map((item) => {
+                {types.map((item, i) => {
                 
-                    {console.log(item)}
-                   return  <Text >{item.type.name}</Text>
+                   return  <Text key={i}>{item.type.name}</Text>
                 
                 })}
             
