@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { Image, StyleSheet, View } from 'react-native'
+import { Button, Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { FlatList, TouchableHighlight } from 'react-native-gesture-handler';
 import PokedexApi from '../services/PokedexApi'
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
 import { FAB, Portal, Text } from 'react-native-paper'
 import Types from '../components/Types';
 import { CapitalizeWord } from '../components/CapitalyzeWord';
 
-export default function HomeScreen(props) {
+export default function HomeScreen({props, navigation}) {
     const [pokemons, setPokemons] = useState([]);
     const [id, setId] = useState([])
     const [state, setState] = useState({ open: false });
+    const [colorList, setColorList] = useState()
+    const [isPressed, setIsPressed] = useState(true);
 
     useEffect(() => {
         PokedexApi.get('/pokemon?limit=10').then(response => {
@@ -19,6 +20,12 @@ export default function HomeScreen(props) {
             pokemonList.map((item, i) => {
                 item.id = i + 1
                 setId(item.id)
+
+                PokedexApi.get('/pokemon-species/' + (i + 1) + '/').then(response => {
+                    let listColor = response.data.color
+                    setColorList(listColor)
+                })
+
                 return item
             })
             setPokemons(pokemonList)
@@ -29,22 +36,27 @@ export default function HomeScreen(props) {
 
     const { open } = state;
 
-    const navigation = useNavigation()
-
+    console.log(colorList)
 
     return (
         <View style={styles.Container}>
-
+            <Button title="Open drawer" onPress={() => navigation.openDrawer()} />
             <FlatList
-                style={styles.Flat}
                 contentContainerStyle={styles.Flat}
                 showsVerticalScrollIndicator={false}
                 data={pokemons}
                 keyExtractor={item => String(item.id)}
                 renderItem={({ item, i }) => (
 
-                    <TouchableHighlight onPress={() => { props.navigation.navigate('TelaInformacao', item.id) }}>
-                        <View key={item.id} style={styles.containerMap}>
+
+                    <TouchableHighlight onPress={() => { navigation.navigate('TelaInformacao', item.id) }}>
+                        <View key={item.id} style={{
+                            flexDirection: 'row', justifyContent: 'space-between',
+                            borderWidth: 1, borderRadius: 15, borderColor: 'black',
+                            paddingLeft: 10,
+                            // backgroundColor: colorList.name,
+                            height: 80
+                        }}>
                             <View style={styles.containerInfos}>
                                 <View style={{ alignItems: 'center', gap: 10, width: '100%' }}>
                                     <View style={[styles.containerName]}>
@@ -53,7 +65,7 @@ export default function HomeScreen(props) {
                                             <Text style={styles.textInside}>{CapitalizeWord(item.name)}</Text>
                                         </View>
                                         <View style={[styles.Equal]}>
-                                            <Ionicons name='star-outline' size={20} color="black" />
+                                            {isPressed ? <Ionicons name='star-outline' size={20} color="black" /> : <Ionicons name='star' size={20} color="black" />}
                                             <Ionicons name='ellipse-outline' size={20} color="black" />
                                         </View>
                                     </View>
@@ -65,17 +77,17 @@ export default function HomeScreen(props) {
                             </View>
                         </View>
                     </TouchableHighlight>
-
                 )}
             />
 
-            <Portal>
+            < Portal >
                 <FAB.Group
                     fabStyle={{ backgroundColor: '#00918F', borderRadius: 50 }} rippleColor='#00918F' color='white'
                     open={open}
                     visible
+                    backdropColor='transparent'
 
-                    icon={ open ? (
+                    icon={open ? (
                         icon = 'close'
                     ) : (
                         ({ size, color }) => (
@@ -90,24 +102,25 @@ export default function HomeScreen(props) {
                         {
                             icon: 'order-alphabetical-ascending',
                             label: 'Ordenar por...',
+                            labelStyle: styles.labelInside,
                             onPress: () => console.log('Order A-z'),
                         },
                         {
                             icon: 'filter-outline',
                             label: 'Filtrar por nome',
+                            labelStyle: styles.labelInside,
                             onPress: () => console.log('Order Name'),
                         },
                         {
                             icon: 'card-search-outline',
                             label: 'Pesquisar tudo',
+                            labelStyle: styles.labelInside,
                             onPress: () => console.log('Search All'),
                         },
                     ]}
                     onStateChange={onStateChange}
-                // onPress={() =}
                 />
-            </Portal>
-
+            </Portal >
         </View >
     );
 }
@@ -117,11 +130,9 @@ const styles = StyleSheet.create({
         // flex: 1,
         maxWidth: '100%',
         padding: 10,
-        // backgroundColor: '#FFFFFF',
     },
 
     Flat: {
-        // backgroundColor: 'white',
         gap: 10
     },
 
@@ -129,7 +140,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row', justifyContent: 'space-between',
         borderWidth: 1, borderRadius: 15, borderColor: 'black',
         paddingLeft: 10,
-        // backgroundColor: 'white',
         height: 80
     },
 
@@ -137,7 +147,6 @@ const styles = StyleSheet.create({
         flex: 4, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
         maxWidth: '75%',
         paddingVertical: 10,
-        // backgroundColor: 'black'
     },
 
     Equal: {
@@ -160,10 +169,11 @@ const styles = StyleSheet.create({
         borderLeftWidth: 2, borderTopLeftRadius: 40, borderBottomLeftRadius: 40
     },
 
-    // fab: {
-    //     position: 'absolute',
-    //     bottom: 0, right: 0,
-    //     // marginBottom: 10, marginRight: 20
-    // }
+    labelInside: {
+        backgroundColor: 'white',
+        padding: 5,
+        fontSize: 17, fontWeight: '600',
+        borderRadius: 5, borderWidth: 1,
+    }
 
 })

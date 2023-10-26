@@ -1,8 +1,6 @@
 import { Image, StyleSheet, useWindowDimensions } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import StackRoutes from './StackRoutes';
-import { Ionicons } from '@expo/vector-icons';
-import HomeScreen from '../pages/HomeScreen';
 
 const Drawer = createDrawerNavigator();
 export default function Routes() {
