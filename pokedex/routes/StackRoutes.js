@@ -9,8 +9,8 @@ const Stack = createStackNavigator();
 export default function StackRoutes() {
     return (
         
-            <Stack.Navigator initialRouteName='HomeScreen' >
-                {/* <Stack.Screen name="HomeScreen" component={HomeScreen} options={{headerShown: false }}/> */}
+            <Stack.Navigator initialRouteName='HomeScreen' screenOptions={{headerStyle: styles.backGround, headerTitleStyle: styles.headerTitleStyle, headerLeftContainerStyle: { paddingLeft: 10 },}}>
+                <Stack.Screen name="HomeScreen" component={HomeScreen}/>
                 <Stack.Screen name="TelaInformacao" component={InfoPokemon} options={{ headerTitle: 'Notificações', headerLeftLabelVisible: null, }} />
                 {/* <Stack.Screen name="StorageAndData" component={StorageAndData} options={{ headerTitle: 'Armazenamento e dados', headerLeftLabelVisible: null }} /> */}
             </Stack.Navigator>
