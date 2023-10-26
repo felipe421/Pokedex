@@ -3,7 +3,8 @@ import { Image, StyleSheet, View } from 'react-native'
 import { FlatList, TouchableHighlight } from 'react-native-gesture-handler';
 import PokedexApi from '../services/PokedexApi'
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Card, FAB, Portal, Text } from 'react-native-paper'
+import { useNavigation } from '@react-navigation/native';
+import { FAB, Portal, Text } from 'react-native-paper'
 import Types from '../components/Types';
 import { CapitalizeWord } from '../components/CapitalyzeWord';
 
@@ -28,6 +29,9 @@ export default function HomeScreen(props) {
 
     const { open } = state;
 
+    const navigation = useNavigation()
+
+
     return (
         <View style={styles.Container}>
 
@@ -38,15 +42,7 @@ export default function HomeScreen(props) {
                 data={pokemons}
                 keyExtractor={item => String(item.id)}
                 renderItem={({ item, i }) => (
-                    // <></>
-                    // <Card key={item.id} mode='outlined' style={{ marginBottom: 10, flex: 1, borderRadius: 5 }} onPress={() => { props.navigation.navigate('TelaInformacao', item.id)}} >
-                    //     <Card.Cover style={{ width: '100%', height: 100, resizeMode: 'stretch', borderRadius: 5, padding: 2 }} source={{ uri: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + item.id + '.png' }} />
-                    //     <Card.Title title={item.name}/>
-                    //     <Card.Content>
 
-                    //     <Types id={item.id}/>
-                    //     </Card.Content>
-                    // </Card>
                     <TouchableHighlight onPress={() => { props.navigation.navigate('TelaInformacao', item.id) }}>
                         <View key={item.id} style={styles.containerMap}>
                             <View style={styles.containerInfos}>
@@ -75,15 +71,20 @@ export default function HomeScreen(props) {
 
             <Portal>
                 <FAB.Group
-                    fabStyle={{ backgroundColor: '#00918F', borderRadius: 50 }} rippleColor='#00918F'  color='white'
-                    
+                    fabStyle={{ backgroundColor: '#00918F', borderRadius: 50 }} rippleColor='#00918F' color='white'
                     open={open}
                     visible
-                    icon={({ size, color }) => (
-                        <Image
-                            source={require('../assets/logoPokedex.png')}
-                            style={{ width: size, height: size, tintColor: color }}
-                        />)}
+
+                    icon={ open ? (
+                        icon = 'close'
+                    ) : (
+                        ({ size, color }) => (
+                            <Image
+                                source={require('../assets/logoPokedex.png')}
+                                style={{ width: size, height: size, tintColor: color }}
+                            />)
+
+                    )}
                     actions={[
                         // { icon: 'plus', onPress: () => console.log('Pressed add') },
                         {
@@ -103,11 +104,7 @@ export default function HomeScreen(props) {
                         },
                     ]}
                     onStateChange={onStateChange}
-                    onPress={() => {
-                        if (open) {
-                            // do something if the speed dial is open
-                        }
-                    }}
+                // onPress={() =}
                 />
             </Portal>
 
@@ -120,7 +117,7 @@ const styles = StyleSheet.create({
         // flex: 1,
         maxWidth: '100%',
         padding: 10,
-        backgroundColor: '#FFFFFF',
+        // backgroundColor: '#FFFFFF',
     },
 
     Flat: {

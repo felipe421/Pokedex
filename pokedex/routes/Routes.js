@@ -2,6 +2,7 @@ import { Image, StyleSheet, useWindowDimensions } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import StackRoutes from './StackRoutes';
 import { Ionicons } from '@expo/vector-icons';
+import HomeScreen from '../pages/HomeScreen';
 
 const Drawer = createDrawerNavigator();
 export default function Routes() {
@@ -15,7 +16,7 @@ export default function Routes() {
             drawerType: dimensions.width >= 768 ? 'front' : 'front',
             headerTintColor: 'white'
         }}>
-            <Drawer.Screen name="Pokedex" component={StackRoutes} options={{ drawerIcon: ({ size, focused }) => <Image style={styles.icon} source={require('../assets/logoPokedex.png')} size={size} /> }} />
+            <Drawer.Screen name="HomeScreen" component={HomeScreen} options={{headerTitle: 'Pokedex', drawerIcon: ({ size, focused }) => <Image style={styles.icon} source={require('../assets/logoPokedex.png')} size={size} /> }}/>
             {/* <Drawer.Screen name="Pokedex" component={StackRoutes} options={{drawerIcon: ({size, focused}) => <Ionicons name='hourglass' color='#A9A9A9' size={size} />}}/> */}
         </Drawer.Navigator>
     )
