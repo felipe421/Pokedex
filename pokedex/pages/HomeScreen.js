@@ -7,36 +7,45 @@ import { FAB, Portal, Text } from 'react-native-paper'
 import Types from '../components/Types';
 import { CapitalizeWord } from '../components/CapitalyzeWord';
 
-export default function HomeScreen({props, navigation}) {
+export default function HomeScreen({ props, navigation }) {
     const [pokemons, setPokemons] = useState([]);
-    const [id, setId] = useState([])
     const [state, setState] = useState({ open: false });
-    const [colorList, setColorList] = useState()
     const [isPressed, setIsPressed] = useState(true);
 
-    useEffect(() => {
-        PokedexApi.get('/pokemon?limit=10').then(response => {
+    async function getColor() {
+        // await PokedexApi.get('/pokemon-species/' + '4' + '/').then(response => {
+        await PokedexApi.get('/pokemon-species/4/').then(response => {
+            return response.data
+        })
+    }
+
+    console.log(getColor())
+
+    async function loadData() {
+        await PokedexApi.get('/pokemon?limit=10').then(response => {
             let pokemonList = response.data.results
             pokemonList.map((item, i) => {
                 item.id = i + 1
-                setId(item.id)
-
-                PokedexApi.get('/pokemon-species/' + (i + 1) + '/').then(response => {
-                    let listColor = response.data.color
-                    setColorList(listColor)
-                })
-
+                item.color = getColor(item.id)
+                // setId(item.id)
+                // console.log(item.color)
                 return item
             })
+            // console.log(pokemonList)
             setPokemons(pokemonList)
         })
+    }
+
+
+    useEffect(() => {
+
+        loadData()
+        
     }, [])
 
     const onStateChange = ({ open }) => setState({ open });
 
     const { open } = state;
-
-    console.log(colorList)
 
     return (
         <View style={styles.Container}>
@@ -54,7 +63,7 @@ export default function HomeScreen({props, navigation}) {
                             flexDirection: 'row', justifyContent: 'space-between',
                             borderWidth: 1, borderRadius: 15, borderColor: 'black',
                             paddingLeft: 10,
-                            // backgroundColor: colorList.name,
+                            backgroundColor: item.color,
                             height: 80
                         }}>
                             <View style={styles.containerInfos}>
