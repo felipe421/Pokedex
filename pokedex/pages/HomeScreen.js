@@ -1,22 +1,34 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Image, StyleSheet, Touchable, View } from 'react-native'
-import { FlatList, TouchableOpacity, } from 'react-native-gesture-handler';
+import { Button, Image, StyleSheet, View } from 'react-native'
+import { FlatList } from 'react-native-gesture-handler';
 import PokedexApi from '../services/PokedexApi'
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { FAB, Portal, Text } from 'react-native-paper'
-import Types from '../components/Types';
-import { CapitalizeWord } from '../components/CapitalyzeWord';
-import { Fab } from '../components/loopRepete';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import Types from '../components/Home/Types';
+import { CapitalizeWord } from '../components/Home/CapitalyzeWord';
+import { Fab } from '../components/Home/loopRepete';
+import { Circle, Star } from '../components/Home/StateAlter';
+import * as Animatable from 'react-native-animatable';
+
+// export function Animate(props) {
+//     return (
+//         <Animatable.View
+//             animation='bounce'
+//             useNativeDriver
+//             duration={3000}
+//         >
+//             {props.children}
+//         </Animatable.View>
+
+//     )
+// }
 
 export default function HomeScreen({ props, navigation }) {
     const [pokemons, setPokemons] = useState([]);
     const [pokemonVerify, setPokemonVerify] = useState(false)
     const [state, setState] = useState({ open: false });
-    const [isPressed, setIsPressed] = useState(true);
 
     async function loadData() {
-        await PokedexApi.get('/pokemon?limit=1').then(response => {
+        await PokedexApi.get('/pokemon?limit=100').then(response => {
             let pokemonList = response.data.results
 
             pokemonList.map((item, i) => {
@@ -39,7 +51,7 @@ export default function HomeScreen({ props, navigation }) {
 
         novaLista.map((item) => {
             PokedexApi.get('/pokemon-species/' + item.id + '/').then(response => {
-                item.color = response.data.color.name 
+                item.color = response.data.color.name
                 return item.color
             })
             setPokemons(novaLista)
@@ -48,13 +60,12 @@ export default function HomeScreen({ props, navigation }) {
 
     useEffect(() => {
         getColor()
+        console.log(getColor())
     }, [pokemonVerify])
 
     const onStateChange = ({ open }) => setState({ open });
 
     const { open } = state;
-
-    // console.log(pokemons)
 
     return (
         <View style={styles.Container}>
@@ -66,16 +77,21 @@ export default function HomeScreen({ props, navigation }) {
                 keyExtractor={item => String(item.id)}
                 renderItem={({ item, i }) => (
 
-                    <>
-
-                        <View key={item.id} style={{
+                        <Animatable.View key={item.id}
+                        style={{
                             flexDirection: 'row', justifyContent: 'space-between',
                             borderWidth: 1, borderRadius: 15, borderColor: '#00918F',
                             paddingLeft: 10,
                             backgroundColor: item.color ? item.color : 'transparent',
                             height: 80
-                        }}>
-                            <View style={styles.containerInfos}>
+                        }}
+                            animation='bounce'
+                            useNativeDriver
+                            duration={1000}
+                        >
+
+
+                            <View key={item.id} style={styles.containerInfos}>
                                 <View style={{ alignItems: 'center', gap: 10, width: '100%' }}>
                                     <View style={[styles.containerName]}>
                                         <View style={styles.Equal}>
@@ -83,10 +99,8 @@ export default function HomeScreen({ props, navigation }) {
                                             <Text style={styles.textInside}>{CapitalizeWord(item.name)}</Text>
                                         </View>
                                         <View style={[styles.Equal]}>
-                                            <TouchableOpacity onPress={() => setIsPressed(!isPressed)}>
-                                                {isPressed ? <Ionicons name='star-outline' size={20} color="#00918F" /> : <Ionicons name='star' size={20} color="#00918F" />}
-                                            </TouchableOpacity>
-                                            <Ionicons name='ellipse-outline' size={20} color="#00918F" />
+                                            <Star />
+                                            <Circle />
                                         </View>
                                     </View>
                                     <Types id={item.id} />
@@ -95,8 +109,7 @@ export default function HomeScreen({ props, navigation }) {
                             <View style={styles.Image}>
                                 <Image source={{ uri: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + item.id + '.png' }} style={{ width: '100%', height: '100%', padding: 2 }} />
                             </View>
-                        </View>
-                    </>
+                        </Animatable.View>
 
                 )}
             />
@@ -176,8 +189,6 @@ const styles = StyleSheet.create({
         fontSize: 17, fontWeight: '600',
         borderRadius: 5, borderWidth: 1,
     }
-
-    // colorEqual: ''
 
 })
 
