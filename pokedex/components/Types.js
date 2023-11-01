@@ -4,6 +4,7 @@ import { Card, Text } from 'react-native-paper'
 import axios from 'axios'
 import { FlatList } from 'react-native-gesture-handler'
 import { ConvertUpperCase } from './CapitalyzeWord'
+import defaultColor from './Glabal'
 
 export default function Types(props) {
     const [types, setTypes] = useState([])
@@ -39,8 +40,8 @@ export default function Types(props) {
 
             {types.map((item, i) => {
                 return (
-                    <View key={i} style={styles.containerText}>
-                        <Text style={styles.textInside}>{ConvertUpperCase(item.type.name)}</Text>
+                    <View key={i} style={[styles.containerText, defaultColor.border]}>
+                        <Text style={[styles.textInside, defaultColor.font]}>{ConvertUpperCase(item.type.name)}</Text>
                     </View>
                 )
             })}

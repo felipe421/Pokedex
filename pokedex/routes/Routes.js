@@ -14,7 +14,7 @@ export default function Routes() {
             drawerType: dimensions.width >= 768 ? 'front' : 'front',
             headerTintColor: 'white'
         }}>
-            <Drawer.Screen name="HomeScreen" component={StackRoutes} options={{headerTitle: 'Pokedex', drawerIcon: ({ size, focused }) => <Image style={styles.icon} source={require('../assets/logoPokedex.png')} size={size} />, headerShown: false }}/>
+            <Drawer.Screen name="HomeTela" component={StackRoutes} options={{headerTitle: 'Pokedex', drawerIcon: ({ size, focused }) => <Image style={styles.icon} source={require('../assets/logoPokedex.png')} size={size} />, headerShown: false }}/>
             {/* <Drawer.Screen name="Pokedex" component={StackRoutes} options={{drawerIcon: ({size, focused}) => <Ionicons name='hourglass' color='#A9A9A9' size={size} />}}/> */}
         </Drawer.Navigator>
     )

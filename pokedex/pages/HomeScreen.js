@@ -1,51 +1,60 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Image, StyleSheet, TouchableOpacity, View } from 'react-native'
-import { FlatList, TouchableHighlight } from 'react-native-gesture-handler';
+import { Button, Image, StyleSheet, Touchable, View } from 'react-native'
+import { FlatList, TouchableOpacity, } from 'react-native-gesture-handler';
 import PokedexApi from '../services/PokedexApi'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { FAB, Portal, Text } from 'react-native-paper'
 import Types from '../components/Types';
 import { CapitalizeWord } from '../components/CapitalyzeWord';
+import { Fab } from '../components/loopRepete';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 export default function HomeScreen({ props, navigation }) {
     const [pokemons, setPokemons] = useState([]);
+    const [pokemonVerify, setPokemonVerify] = useState(false)
     const [state, setState] = useState({ open: false });
     const [isPressed, setIsPressed] = useState(true);
 
-    async function getColor() {
-        // await PokedexApi.get('/pokemon-species/' + '4' + '/').then(response => {
-        await PokedexApi.get('/pokemon-species/4/').then(response => {
-            return response.data
-        })
-    }
-
-    console.log(getColor())
-
     async function loadData() {
-        await PokedexApi.get('/pokemon?limit=10').then(response => {
+        await PokedexApi.get('/pokemon?limit=1').then(response => {
             let pokemonList = response.data.results
+
             pokemonList.map((item, i) => {
                 item.id = i + 1
-                item.color = getColor(item.id)
-                // setId(item.id)
-                // console.log(item.color)
                 return item
             })
-            // console.log(pokemonList)
             setPokemons(pokemonList)
+            setPokemonVerify(true)
         })
     }
-
 
     useEffect(() => {
 
         loadData()
-        
+
     }, [])
+
+    function getColor() {
+        let novaLista = pokemons
+
+        novaLista.map((item) => {
+            PokedexApi.get('/pokemon-species/' + item.id + '/').then(response => {
+                item.color = response.data.color.name 
+                return item.color
+            })
+            setPokemons(novaLista)
+        })
+    }
+
+    useEffect(() => {
+        getColor()
+    }, [pokemonVerify])
 
     const onStateChange = ({ open }) => setState({ open });
 
     const { open } = state;
+
+    // console.log(pokemons)
 
     return (
         <View style={styles.Container}>
@@ -57,13 +66,13 @@ export default function HomeScreen({ props, navigation }) {
                 keyExtractor={item => String(item.id)}
                 renderItem={({ item, i }) => (
 
+                    <>
 
-                    <TouchableHighlight onPress={() => { navigation.navigate('TelaInformacao', item.id) }}>
                         <View key={item.id} style={{
                             flexDirection: 'row', justifyContent: 'space-between',
-                            borderWidth: 1, borderRadius: 15, borderColor: 'black',
+                            borderWidth: 1, borderRadius: 15, borderColor: '#00918F',
                             paddingLeft: 10,
-                            backgroundColor: item.color,
+                            backgroundColor: item.color ? item.color : 'transparent',
                             height: 80
                         }}>
                             <View style={styles.containerInfos}>
@@ -74,8 +83,10 @@ export default function HomeScreen({ props, navigation }) {
                                             <Text style={styles.textInside}>{CapitalizeWord(item.name)}</Text>
                                         </View>
                                         <View style={[styles.Equal]}>
-                                            {isPressed ? <Ionicons name='star-outline' size={20} color="black" /> : <Ionicons name='star' size={20} color="black" />}
-                                            <Ionicons name='ellipse-outline' size={20} color="black" />
+                                            <TouchableOpacity onPress={() => setIsPressed(!isPressed)}>
+                                                {isPressed ? <Ionicons name='star-outline' size={20} color="#00918F" /> : <Ionicons name='star' size={20} color="#00918F" />}
+                                            </TouchableOpacity>
+                                            <Ionicons name='ellipse-outline' size={20} color="#00918F" />
                                         </View>
                                     </View>
                                     <Types id={item.id} />
@@ -85,7 +96,8 @@ export default function HomeScreen({ props, navigation }) {
                                 <Image source={{ uri: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + item.id + '.png' }} style={{ width: '100%', height: '100%', padding: 2 }} />
                             </View>
                         </View>
-                    </TouchableHighlight>
+                    </>
+
                 )}
             />
 
@@ -106,27 +118,7 @@ export default function HomeScreen({ props, navigation }) {
                             />)
 
                     )}
-                    actions={[
-                        // { icon: 'plus', onPress: () => console.log('Pressed add') },
-                        {
-                            icon: 'order-alphabetical-ascending',
-                            label: 'Ordenar por...',
-                            labelStyle: styles.labelInside,
-                            onPress: () => console.log('Order A-z'),
-                        },
-                        {
-                            icon: 'filter-outline',
-                            label: 'Filtrar por nome',
-                            labelStyle: styles.labelInside,
-                            onPress: () => console.log('Order Name'),
-                        },
-                        {
-                            icon: 'card-search-outline',
-                            label: 'Pesquisar tudo',
-                            labelStyle: styles.labelInside,
-                            onPress: () => console.log('Search All'),
-                        },
-                    ]}
+                    actions={Fab}
                     onStateChange={onStateChange}
                 />
             </Portal >
@@ -168,21 +160,26 @@ const styles = StyleSheet.create({
     },
 
     textInside: {
-        fontSize: 20, fontWeight: '500'
+        fontSize: 20, fontWeight: '500', color: '#00918F'
     },
 
     Image: {
         width: '25%',
         marginLeft: 6,
         alignItems: 'center', justifyContent: 'center',
-        borderLeftWidth: 2, borderTopLeftRadius: 40, borderBottomLeftRadius: 40
+        borderLeftWidth: 2, borderTopLeftRadius: 40, borderBottomLeftRadius: 40, borderColor: '#00918F'
     },
 
     labelInside: {
-        backgroundColor: 'white',
+        backgroundColor: '#00918F',
         padding: 5,
         fontSize: 17, fontWeight: '600',
         borderRadius: 5, borderWidth: 1,
     }
 
+    // colorEqual: ''
+
 })
+
+{/* <TouchableHighlight onPress={() => { navigation.navigate('TelaInformacao', item.id) }}>
+</TouchableHighlight> */}
