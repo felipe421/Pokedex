@@ -9,19 +9,6 @@ import { Fab } from '../components/Home/loopRepete';
 import { Circle, Star } from '../components/Home/StateAlter';
 import * as Animatable from 'react-native-animatable';
 
-// export function Animate(props) {
-//     return (
-//         <Animatable.View
-//             animation='bounce'
-//             useNativeDriver
-//             duration={3000}
-//         >
-//             {props.children}
-//         </Animatable.View>
-
-//     )
-// }
-
 export default function HomeScreen({ props, navigation }) {
     const [pokemons, setPokemons] = useState([]);
     const [pokemonVerify, setPokemonVerify] = useState(false)
@@ -75,21 +62,21 @@ export default function HomeScreen({ props, navigation }) {
                 showsVerticalScrollIndicator={false}
                 data={pokemons}
                 keyExtractor={item => String(item.id)}
-                renderItem={({ item, i }) => (
+                renderItem={({ item }) => (
 
                         <Animatable.View key={item.id}
                         style={{
                             flexDirection: 'row', justifyContent: 'space-between',
                             borderWidth: 1, borderRadius: 15, borderColor: '#00918F',
                             paddingLeft: 10,
-                            backgroundColor: item.color ? item.color : 'transparent',
+                            // backgroundColor: item.color ? item.color : 'transparent',
+                            backgroundColor: 'transparent',
                             height: 80
                         }}
                             animation='bounce'
                             useNativeDriver
                             duration={1000}
                         >
-
 
                             <View key={item.id} style={styles.containerInfos}>
                                 <View style={{ alignItems: 'center', gap: 10, width: '100%' }}>
