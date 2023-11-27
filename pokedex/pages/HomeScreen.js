@@ -64,7 +64,7 @@ export default function HomeScreen({ props, navigation }) {
                 keyExtractor={item => String(item.id)}
                 renderItem={({ item }) => (
 
-                        <Animatable.View key={item.id}
+                    <Animatable.View key={item.id}
                         style={{
                             flexDirection: 'row', justifyContent: 'space-between',
                             borderWidth: 1, borderRadius: 15, borderColor: '#00918F',
@@ -73,30 +73,30 @@ export default function HomeScreen({ props, navigation }) {
                             backgroundColor: 'transparent',
                             height: 80
                         }}
-                            animation='bounce'
-                            useNativeDriver
-                            duration={1000}
-                        >
+                        animation='bounce'
+                        useNativeDriver
+                        duration={1000}
+                    >
 
-                            <View key={item.id} style={styles.containerInfos}>
-                                <View style={{ alignItems: 'center', gap: 10, width: '100%' }}>
-                                    <View style={[styles.containerName]}>
-                                        <View style={styles.Equal}>
-                                            <Text style={styles.textInside}># {item.id}</Text>
-                                            <Text style={styles.textInside}>{CapitalizeWord(item.name)}</Text>
-                                        </View>
-                                        <View style={[styles.Equal]}>
-                                            <Star />
-                                            <Circle />
-                                        </View>
+                        <View key={item.id} style={styles.containerInfos}>
+                            <View style={{ alignItems: 'center', gap: 10, width: '100%' }}>
+                                <View style={[styles.containerName]}>
+                                    <View style={styles.Equal}>
+                                        <Text style={styles.textInside}># {item.id}</Text>
+                                        <Text style={styles.textInside}>{CapitalizeWord(item.name)}</Text>
                                     </View>
-                                    <Types id={item.id} />
+                                    <View style={[styles.Equal]}>
+                                        <Star />
+                                        <Circle />
+                                    </View>
                                 </View>
+                                <Types id={item.id} />
                             </View>
-                            <View style={styles.Image}>
-                                <Image source={{ uri: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + item.id + '.png' }} style={{ width: '100%', height: '100%', padding: 2 }} />
-                            </View>
-                        </Animatable.View>
+                        </View>
+                        <View style={styles.Image}>
+                            <Image source={{ uri: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/' + item.id + '.png' }} style={{ width: '100%', height: '100%', padding: 2 }} />
+                        </View>
+                    </Animatable.View>
 
                 )}
             />

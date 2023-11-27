@@ -1,6 +1,7 @@
 import { Image, StyleSheet, useWindowDimensions } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import StackRoutes from './StackRoutes';
+import GamePages from '../pages/GamePages';
 
 const Drawer = createDrawerNavigator();
 export default function Routes() {
@@ -16,6 +17,10 @@ export default function Routes() {
         }}>
             <Drawer.Screen name="HomeTela" component={StackRoutes}
                 options={{ drawerLabel: 'Pokedex', drawerIcon: ({ size, focused }) => <Image style={styles.icon} source={require('../assets/logoPokedex.png')} size={size} tintColor='#00918F' />, headerShown: false, drawerItemStyle: {marginHorizontal: 0, backgroundColor: 'white', borderRadius: 0} }}
+            />
+
+            <Drawer.Screen name="Jogo" component={GamePages}
+                options={{ drawerLabel: 'Jogo', drawerIcon: ({ size, focused }) => <Image style={styles.icon} source={require('../assets/logoPokedex.png')} size={size} tintColor='#00918F' />, headerShown: false, drawerItemStyle: {marginHorizontal: 0, backgroundColor: 'white', borderRadius: 0} }}
             />
         </Drawer.Navigator>
     )
