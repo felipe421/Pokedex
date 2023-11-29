@@ -1,10 +1,10 @@
 // screens/GamePages.js
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Button, Text } from 'react-native';
+import { View, StyleSheet, Button, Text, Image, TouchableOpacity } from 'react-native';
 import GameBoard from '../components/jogo/GameBoard';
 
 const getPokemons = () => {
-  const pokemons = Array.from({ length: 5 }, (_, index) => ({
+  const pokemons = Array.from({ length: 6 }, (_, index) => ({
     id: index + 1,
     name: `Pokemon ${index + 1}`,
     isFlipped: false,
@@ -74,11 +74,14 @@ const GamePages = () => {
 
   return (
     <View style={styles.container}>
+      <Image style={{width: 300, height: 150, resizeMode: 'cover'}} source={require('../assets/pokemon_images/card.png')}/>
       <GameBoard pokemons={pokemons} onCardPress={handleCardPress} />
+      
+
       {showCongratulations && (
         <View style={styles.congratulationsContainer}>
           <Text style={styles.congratulationsText}>PARABÉNS, VOCÊ GANHOU!</Text>
-          <Button title="Jogar de novo" onPress={resetGame} />
+          <TouchableOpacity onPress={resetGame} style={styles.button}><Text>Jogar de novo</Text></TouchableOpacity>
         </View>
       )}
     </View>
@@ -101,6 +104,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
   },
+  button: {
+    padding: 6,
+    borderWidth: 2, borderColor: '#FECA05', borderRadius: 10
+  }
 });
 
 export default GamePages;
