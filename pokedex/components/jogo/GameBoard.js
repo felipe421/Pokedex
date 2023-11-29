@@ -1,10 +1,9 @@
-// components/GameBoard.js
+// components/jogo/GameBoard.js
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import Card from './Card';
 
-const GameBoard = ({ pokemons, onCardPress, flippedCards }) => {
-    
+const GameBoard = ({ pokemons, onCardPress }) => {
   return (
     <View style={styles.board}>
       {pokemons.map((pokemon, index) => (
@@ -12,7 +11,7 @@ const GameBoard = ({ pokemons, onCardPress, flippedCards }) => {
           key={index}
           pokemon={pokemon}
           onPress={() => onCardPress(index)}
-          flipped={flippedCards.includes(index)}
+          isFlipped={pokemon.isFlipped}
         />
       ))}
     </View>

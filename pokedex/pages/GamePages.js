@@ -1,66 +1,86 @@
 // screens/GamePages.js
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import PokedexApi from '../services/PokedexApi';
+import { View, StyleSheet, Button, Text } from 'react-native';
 import GameBoard from '../components/jogo/GameBoard';
 
-const getPokemons = async () => {
-  try {
-    const response = await PokedexApi.get('/pokemon?limit=4'); // Você pode ajustar o limite conforme necessário
-    const pokemons = response.data.results;
-    
-    // Adicione mais detalhes do pokémon, se necessário, fazendo chamadas adicionais para a API
-    
-    return pokemons;
-  } catch (error) {
-    console.error('Erro ao obter dados dos pokémons:', error);
-    return [];
-  }
+const getPokemons = () => {
+  const pokemons = Array.from({ length: 5 }, (_, index) => ({
+    id: index + 1,
+    name: `Pokemon ${index + 1}`,
+    isFlipped: false,
+    isMatched: false,
+  }));
+
+  const duplicatedPokemons = [...pokemons, ...pokemons];
+  const shuffledPokemons = duplicatedPokemons.sort(() => Math.random() - 0.5);
+
+  return shuffledPokemons;
 };
 
 const GamePages = () => {
   const [pokemons, setPokemons] = useState([]);
-  const [flippedCards, setFlippedCards] = useState([]);
+  const [flippedCount, setFlippedCount] = useState(0);
+  const [firstFlippedIndex, setFirstFlippedIndex] = useState(null);
+  const [showCongratulations, setShowCongratulations] = useState(false);
 
   useEffect(() => {
-    const fetchPokemons = async () => {
-      const data = await getPokemons();
-      setPokemons(data);
-    };
-
-    fetchPokemons();
+    resetGame();
   }, []);
 
+  const resetGame = () => {
+    const data = getPokemons();
+    setPokemons(data);
+    setFlippedCount(0);
+    setFirstFlippedIndex(null);
+    setShowCongratulations(false);
+  };
+
   const handleCardPress = (index) => {
-    // Se a carta já foi virada, não faz nada
-    if (flippedCards.includes(index)) {
+    const updatedPokemons = [...pokemons];
+
+    if (updatedPokemons[index].isFlipped || updatedPokemons[index].isMatched) {
       return;
     }
 
-    // Vira a carta
-    const newFlippedCards = [...flippedCards, index];
-    setFlippedCards(newFlippedCards);
+    updatedPokemons[index] = { ...updatedPokemons[index], isFlipped: true };
+    setPokemons(updatedPokemons);
+    setFlippedCount((prevCount) => prevCount + 1);
 
-    // Se duas cartas estiverem viradas, verifica se são iguais após um curto intervalo
-    if (newFlippedCards.length === 2) {
+    if (flippedCount % 2 === 0) {
+      setFirstFlippedIndex(index);
+    } else {
       setTimeout(() => {
-        const [firstIndex, secondIndex] = newFlippedCards;
+        if (updatedPokemons[firstFlippedIndex].name === updatedPokemons[index].name) {
+          updatedPokemons[firstFlippedIndex] = { ...updatedPokemons[firstFlippedIndex], isMatched: true };
+          updatedPokemons[index] = { ...updatedPokemons[index], isMatched: true };
+          setPokemons(updatedPokemons);
 
-        // Verifica se as cartas são iguais
-        if (pokemons[firstIndex].name === pokemons[secondIndex].name) {
-          // Se são iguais, mantém as cartas viradas
-          setFlippedCards([]);
+          // Verifica se todas as cartas foram corretamente viradas
+          const isGameFinished = updatedPokemons.every((pokemon) => pokemon.isMatched);
+          if (isGameFinished) {
+            setShowCongratulations(true);
+          }
         } else {
-          // Se não são iguais, desvira as cartas
-          setFlippedCards([]);
+          updatedPokemons[firstFlippedIndex] = { ...updatedPokemons[firstFlippedIndex], isFlipped: false };
+          updatedPokemons[index] = { ...updatedPokemons[index], isFlipped: false };
+          setPokemons(updatedPokemons);
         }
-      }, 1000); // Intervalo de 1 segundo para exibir as cartas viradas antes de verificar
+
+        setFlippedCount((prevCount) => prevCount + 2);
+        setFirstFlippedIndex(null);
+      }, 1000);
     }
   };
 
   return (
     <View style={styles.container}>
-      <GameBoard pokemons={pokemons} onCardPress={handleCardPress} flippedCards={flippedCards} />
+      <GameBoard pokemons={pokemons} onCardPress={handleCardPress} />
+      {showCongratulations && (
+        <View style={styles.congratulationsContainer}>
+          <Text style={styles.congratulationsText}>PARABÉNS, VOCÊ GANHOU!</Text>
+          <Button title="Jogar de novo" onPress={resetGame} />
+        </View>
+      )}
     </View>
   );
 };
@@ -71,6 +91,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  congratulationsContainer: {
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  congratulationsText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
 });
 
